@@ -5,6 +5,7 @@ import os
 import random
 import math
 import heapq
+import numpy as np
 
 
 files = os.listdir('Input_Files/')
@@ -13,8 +14,7 @@ l = len(files)
 for i in range(l):
     files[i] = files[i][:-3]
 
-# for file in files:
-#     print(file)
+
 def solve(M,T2,T3,T4,num_of_ing,ingredients):
     delivered, score = 0, 0
 
@@ -23,46 +23,51 @@ def solve(M,T2,T3,T4,num_of_ing,ingredients):
     while delivered < M:
 
         # Delivering pizzas to 2-member teams
-        if delivered + 2 < M and T2 > 0:
+        if delivered + 2 <= M and T2 > 0:
             T2 -= 1
-            max_index = num_of_ing.index(max(num_of_ing))
-            min_index = num_of_ing.index(min(num_of_ing))
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min_index] = np.nan
+
             tt.append([max_index,min_index])
             # ****Check if math.NaN does not work****
-            num_of_ing[max_index] = math.nan
-            num_of_ing[min_index] = math.nan
+
             ss = len(set(ingredients[max_index] + ingredients[min_index]))
             delivered += 2
 
-        elif delivered + 3 < M and T3 > 0:
+        # Delivering pizzas to 3-member teams
+        elif delivered + 3 <= M and T3 > 0:
             T3 -= 1
-            max_index = num_of_ing.index(max(num_of_ing))
-            num_of_ing[max_index] = math.nan
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
 
-            min1_index = num_of_ing.index(min(num_of_ing))
-            num_of_ing[min1_index] = math.nan
+            min1_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min1_index] = np.nan
 
-            min2_index = num_of_ing.index(min(num_of_ing))
-            num_of_ing[min2_index] = math.nan
+            min2_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min2_index] = np.nan
             ttt.append([max_index,min1_index, min2_index])
             # ****Check if math.NaN does not work****
 
             ss = len(set(ingredients[max_index]+ingredients[min1_index]+ingredients[min2_index]))
             delivered += 3
 
-        elif delivered + 4 < M and T4 > 0:
+        # Delivering pizzas to 4-member teams
+        elif delivered + 4 <=M and T4 > 0:
             T4 -= 1
-            max_index = num_of_ing.index(max(num_of_ing))
-            num_of_ing[max_index] = math.nan
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
 
-            min1_index = num_of_ing.index(min(num_of_ing))
-            num_of_ing[min1_index] = math.nan
+            min1_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min1_index] = np.nan
 
-            min2_index = num_of_ing.index(min(num_of_ing))
-            num_of_ing[min2_index] = math.nan
+            min2_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min2_index] = np.nan
 
-            min3_index = num_of_ing.index(min(num_of_ing))
-            num_of_ing[min3_index] = math.nan
+            min3_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min3_index] = np.nan
 
             tttt.append([max_index, min1_index, min2_index, min3_index])
             # ****Check if math.NaN does not work****
@@ -74,11 +79,141 @@ def solve(M,T2,T3,T4,num_of_ing,ingredients):
 
         score += ss**2
 
-    return score
+    return score, tt, ttt, tttt
 
+def solve2(M,T2,T3,T4,num_of_ing,ingredients):
+    delivered, score = 0, 0
 
-for i in range(l):
+    tt, ttt, tttt = [], [], []
+    # While delivered pizzas are less than the total number
+    while delivered < M:
 
+        # Delivering pizzas to 2-member teams
+        if delivered + 2 <= M and T2 > 0:
+            T2 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min_index] = np.nan
+
+            tt.append([max_index,min_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index] + ingredients[min_index]))
+            delivered += 2
+
+        # Delivering pizzas to 3-member teams
+        elif delivered + 3 <= M and T3 > 0:
+            T3 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min1_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min1_index] = np.nan
+
+            min2_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min2_index] = np.nan
+            ttt.append([max_index,min1_index, min2_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index]+ingredients[min1_index]+ingredients[min2_index]))
+            delivered += 3
+
+        # Delivering pizzas to 4-member teams
+        elif delivered + 4 <=M and T4 > 0:
+            T4 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min1_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min1_index] = np.nan
+
+            min2_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min2_index] = np.nan
+
+            min3_index = num_of_ing.index(np.nanmin(num_of_ing))
+            num_of_ing[min3_index] = np.nan
+
+            tttt.append([max_index, min1_index, min2_index, min3_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index] + ingredients[min1_index] + ingredients[min2_index] + ingredients[min3_index]))
+            delivered += 4
+        else:
+            break
+
+        score += ss**2
+
+    return score, tt, ttt, tttt
+
+def solve3(M,T2,T3,T4,num_of_ing,ingredients):
+    delivered, score = 0, 0
+
+    tt, ttt, tttt = [], [], []
+    # While delivered pizzas are less than the total number
+    while delivered < M:
+
+        # Delivering pizzas to 2-member teams
+        if delivered + 2 <= M and T2 > 0:
+            T2 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min_index] = np.nan
+
+            tt.append([max_index,min_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index] + ingredients[min_index]))
+            delivered += 2
+
+        # Delivering pizzas to 3-member teams
+        elif delivered + 3 <= M and T3 > 0:
+            T3 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min1_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min1_index] = np.nan
+
+            min2_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min2_index] = np.nan
+            ttt.append([max_index,min1_index, min2_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index]+ingredients[min1_index]+ingredients[min2_index]))
+            delivered += 3
+
+        # Delivering pizzas to 4-member teams
+        elif delivered + 4 <=M and T4 > 0:
+            T4 -= 1
+            max_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[max_index] = np.nan
+
+            min1_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min1_index] = np.nan
+
+            min2_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min2_index] = np.nan
+
+            min3_index = num_of_ing.index(np.nanmax(num_of_ing))
+            num_of_ing[min3_index] = np.nan
+
+            tttt.append([max_index, min1_index, min2_index, min3_index])
+            # ****Check if math.NaN does not work****
+
+            ss = len(set(ingredients[max_index] + ingredients[min1_index] + ingredients[min2_index] + ingredients[min3_index]))
+            delivered += 4
+        else:
+            break
+
+        score += ss**2
+
+    return score, tt, ttt, tttt
+
+for i in range(4):
     with open('Input_Files/'+files[i]+'.in', 'r') as f:
 
         content = f.readlines()
@@ -93,14 +228,24 @@ for i in range(l):
             numbers_of_ingredients.append(int(number_of_ingredients))
 
         # print(ingredients, numbers_of_ingredients)
-
-        score = solve(M,T2,T3,T4,numbers_of_ingredients,ingredients)
+        print("\nCalculating..")
+        score,tt, ttt,tttt = solve3(M,T2,T3,T4,numbers_of_ingredients,ingredients)
 
         print(score)
 
-# Results:
-# 25
-# 6864
+# Results for solve :
+# 50
+# 8327
 # 179958812
-# 9542
-# 48025
+# 1806570
+# 48025 ????
+
+# Results for solve2 :
+# 61
+# 7174
+# 363996296
+
+# Results for solve3 :
+# 61
+# 7018
+# 477546981
